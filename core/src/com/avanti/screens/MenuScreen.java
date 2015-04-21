@@ -5,18 +5,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Array;
 
@@ -27,15 +26,15 @@ public class MenuScreen extends ButtonScreenAdapter{
 	private HorizontalGroup titleGroup, environmentGroup,  shipSelectGroup;
 	private Image  titleGroupImage, environmentGroupImage, shipSelectGroupImage;
 	private Label titleLabel;
-	private static BitmapFont bitmapFont = new BitmapFont();
-	private static final LabelStyle labelStyle = new LabelStyle(bitmapFont, Color.WHITE);
 
 	public MenuScreen(ShipViewer gameInstance) {
 		super(gameInstance);
-		String files[] = fileList.readString().split("\n");
+		String files[] = fileList.readString().split(" ");
 		modelFiles = new Array<FileHandle>();
-		for (String filename: files)
-			modelFiles.add(Gdx.files.internal("models/" + filename));
+		for (String filename: files){
+			System.out.println("'"+filename+"'");
+			modelFiles.add(Gdx.files.internal(filename));
+		}
 
 	}
 
@@ -208,6 +207,7 @@ public class MenuScreen extends ButtonScreenAdapter{
 				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 					buttonClick.play();
 					ShipViewer.selectedColor = color;
+					
 				}
 			});
 			environmentGroup.addActor(label);
@@ -221,7 +221,6 @@ public class MenuScreen extends ButtonScreenAdapter{
 		shipSelectGroup.space(EDGE_TOLERANCE);
 
 		for (FileHandle fh : modelFiles){
-			System.out.println(modelFiles);
 			final FileHandle fileHandle = fh;
 			Label l = new Label(fh.nameWithoutExtension(), labelStyle);
 			l.addListener(new InputListener(){
@@ -231,10 +230,25 @@ public class MenuScreen extends ButtonScreenAdapter{
 				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 					buttonClick.play();
 					ShipViewer.selectedShip = fileHandle;
+					System.out.println(fileHandle);
+					System.out.println(fileHandle.exists());
 				}
 			});
 			shipSelectGroup.addActor(l);
 		}
+		final FileHandle fh = new FileHandle("ship.obj");
+		Label l = new Label(fh.nameWithoutExtension(), labelStyle);
+		l.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.play();
+				ShipViewer.selectedShip = fh;
+			}
+		});
+		shipSelectGroup.addActor(l);
+		
 		shipSelectGroup.pack();
 		menuBody.addActor(shipSelectGroup);
 	}

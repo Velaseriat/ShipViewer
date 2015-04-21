@@ -8,12 +8,15 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public abstract class ButtonScreenAdapter implements Screen{
@@ -52,6 +55,8 @@ public abstract class ButtonScreenAdapter implements Screen{
 	private static Music backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.mp3"));
 	protected  static Sound buttonClick = Gdx.audio.newSound(Gdx.files.internal("click.wav"));
 	
+	protected static BitmapFont bitmapFont = new BitmapFont();
+	protected static final LabelStyle labelStyle = new LabelStyle(bitmapFont, Color.WHITE);
 
 	public ButtonScreenAdapter(ShipViewer gameInstance) {
 		this.gameInstance = gameInstance;
@@ -61,11 +66,15 @@ public abstract class ButtonScreenAdapter implements Screen{
 		Gdx.input.setInputProcessor(inputMultiplexer);
 		backgroundMusic.setVolume((float) 0.35);
 		backgroundMusic.play();
+		backgroundMusic.setLooping(true);
 	}
 
 	public void dispose() {
-		atlas.dispose();
-		buttonSkin.dispose();
+		
+		if (atlas != null)
+			atlas.dispose();
+		if (buttonSkin != null)
+			buttonSkin.dispose();
 		buttonStage.dispose();
 		if (batch != null)
 			batch.dispose();
@@ -84,8 +93,8 @@ public abstract class ButtonScreenAdapter implements Screen{
 	
 	public void shakeBackground(float delta){
 		if (middlePoint.dst(frontPoint) < 5){
-			frontPoint.x = random.nextInt(40 + 10) - 25;
-			frontPoint.y = random.nextInt(40 + 10) - 25;
+			frontPoint.x = random.nextInt(120 + 10) - 25;
+			frontPoint.y = random.nextInt(120 + 10) - 25;
 		}
 		middlePoint.lerp(frontPoint, delta);
 		backPoint.lerp(middlePoint, delta*4);
