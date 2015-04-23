@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		config.title = "ShipViewer - " + ShipViewer.version;
 		config.width = 1600;
 		config.height = 900;
-		config.fullscreen = true;
+		//config.fullscreen = true;
 		new LwjglApplication(new ShipViewer(), config);
 	}
 }

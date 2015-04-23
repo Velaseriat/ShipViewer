@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class ShipViewScreen extends ButtonScreenAdapter implements InputProcessor{
@@ -113,7 +114,7 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 		instance = new ModelInstance(shipModel);
 		blockLocTarget = instance.transform.cpy();
 		if (ShipViewer.selectedShip == null || ShipViewer.selectedShip.nameWithoutExtension().equals("ship"))
-			blockLocTarget.scale(100f, 100f, 100f);
+			blockLocTarget.scale(90f, 90f, 90f);
 		else
 			blockLocTarget.scale(10f, 10f, 10f);
 		
@@ -127,7 +128,7 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 		//blockLoc.add(height*16f);
 		//blockLocTarget.rotate( new Vector3(), 0f);
 		//instance.transform.setTranslation(blockLocTarget.add(16f, 16f, 0f));
-		blockLocTarget.rotate(camera.position.cpy().sub(32f, 0f, 0f) , 90f);
+		//blockLocTarget.rotate(camera.position.cpy().sub(32f, 0f, 0f) , 90f);
 		
 		temp.z = 150f; //back to normal camera height
 		temp.y = temp.y - 100f; //adjust for camera's -100
@@ -203,6 +204,10 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 
 	@Override
 	protected void initializeButtons() {
+		Image black = new Image(buttonBackground);
+		black.setBounds(EDGE_TOLERANCE, EDGE_TOLERANCE, Gdx.graphics.getWidth() - EDGE_TOLERANCE*2f, BUTTON_HEIGHT);
+		buttonStage.addActor(black);
+		
 		Label l1 = new Label("BACK", labelStyle);
 		l1.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -213,8 +218,9 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 				gameInstance.setScreen(new MenuScreen(gameInstance));
 			}
 		});
-		l1.setX(0);
-		l1.setY(0);
+		l1.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		l1.setX(EDGE_TOLERANCE);
+		l1.setY(EDGE_TOLERANCE);
 
 		buttonStage.addActor(l1);
 		
@@ -232,8 +238,9 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 				camera.lookAt(lookat); //make it look at the same shit
 			}
 		});
-		l2.setX(l1.getWidth() + EDGE_TOLERANCE);
-		l2.setY(0);
+		l2.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		l2.setX(EDGE_TOLERANCE + l1.getWidth() + EDGE_TOLERANCE);
+		l2.setY(EDGE_TOLERANCE);
 
 		buttonStage.addActor(l2);
 		
@@ -250,10 +257,60 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 				camera.lookAt(lookat); //make it look at the same shit
 			}
 		});
-		l3.setX(l1.getWidth() + l2.getWidth() + EDGE_TOLERANCE*2f);
-		l3.setY(0);
+		l3.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		l3.setX(EDGE_TOLERANCE + l1.getWidth() + l2.getWidth() + EDGE_TOLERANCE*2f);
+		l3.setY(EDGE_TOLERANCE);
 
 		buttonStage.addActor(l3);
+		
+		Label l4 = new Label("ABOUT X", labelStyle);
+		l4.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.play();
+				blockLocTarget.rotate(1, 0, 0, 45);
+			}
+		});
+		l4.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		l4.setX(EDGE_TOLERANCE + l1.getWidth() + l2.getWidth() + l3.getWidth() +  EDGE_TOLERANCE*3f);
+		l4.setY(EDGE_TOLERANCE);
+
+		buttonStage.addActor(l4);
+		
+		Label l5 = new Label("ABOUT Y", labelStyle);
+		l5.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.play();
+				blockLocTarget.rotate(0, 0, 1, 45);
+			}
+		});
+		l5.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		l5.setX(EDGE_TOLERANCE + l1.getWidth() + l2.getWidth() + l3.getWidth() + l4.getWidth() + EDGE_TOLERANCE*4f);
+		l5.setY(EDGE_TOLERANCE);
+
+		buttonStage.addActor(l5);
+		
+		Label l6 = new Label("ABOUT Z", labelStyle);
+		l6.addListener(new InputListener(){
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				return true;
+			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				buttonClick.play();
+				blockLocTarget.rotate(0, 1, 0, 45);
+			}
+		});
+		l6.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		l6.setX(EDGE_TOLERANCE + l1.getWidth() + l2.getWidth() + l3.getWidth() + l4.getWidth() + l5.getWidth() + EDGE_TOLERANCE*5f);
+		l6.setY(EDGE_TOLERANCE);
+
+		buttonStage.addActor(l6);
+		
 		
 		inputMultiplexer.addProcessor(this);
 		inputMultiplexer.addProcessor(buttonStage);  
@@ -290,6 +347,15 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 		if(keycode == Input.Keys.DOWN){
 			target.add(0f, -32f, 0f);
 			blockLocTarget.translate(0f, -32f, 0f);
+		}
+		if(keycode == Input.Keys.NUM_1){
+			blockLocTarget.rotate(1, 0, 0, 45);
+		}
+		if(keycode == Input.Keys.NUM_2){
+			blockLocTarget.rotate(0, 1, 0, 45);
+		}
+		if(keycode == Input.Keys.NUM_3){
+			blockLocTarget.rotate(0, 0, 1, 45);
 		}
 		System.out.println("Camera: " + camera.position); //cam pos
 		return false;
