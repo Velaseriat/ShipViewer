@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -198,7 +199,7 @@ public class MenuScreen extends ButtonScreenAdapter{
 			final Color color = colors.get(i);
 			final String name = colorNames.get(i);
 			LabelStyle ls = new LabelStyle(bitmapFont, color);
-			Label label = new Label(name, ls);
+			final Label label = new Label(name, ls);
 			label.getStyle().fontColor = color;
 			label.addListener(new InputListener(){
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -207,7 +208,10 @@ public class MenuScreen extends ButtonScreenAdapter{
 				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 					buttonClick.play();
 					ShipViewer.selectedColor = color;
-					
+					for (Actor a : environmentGroup.getChildren()){
+						a.setColor(Color.GRAY);
+					}
+					label.setColor(Color.WHITE);
 				}
 			});
 			environmentGroup.addActor(label);
@@ -222,32 +226,38 @@ public class MenuScreen extends ButtonScreenAdapter{
 
 		for (FileHandle fh : modelFiles){
 			final FileHandle fileHandle = fh;
-			Label l = new Label(fh.nameWithoutExtension(), labelStyle);
-			l.addListener(new InputListener(){
+			final Label label = new Label(fh.nameWithoutExtension(), labelStyle);
+			label.addListener(new InputListener(){
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					return true;
 				}
 				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 					buttonClick.play();
 					ShipViewer.selectedShip = fileHandle;
-					System.out.println(fileHandle);
-					System.out.println(fileHandle.exists());
+					for (Actor a : shipSelectGroup.getChildren()){
+						a.setColor(Color.GRAY);
+					}
+					label.setColor(Color.WHITE);
 				}
 			});
-			shipSelectGroup.addActor(l);
+			shipSelectGroup.addActor(label);
 		}
-		final FileHandle fh = new FileHandle("ship.obj");
-		Label l = new Label(fh.nameWithoutExtension(), labelStyle);
-		l.addListener(new InputListener(){
+		final FileHandle fileHandle = new FileHandle("ship.obj");
+		final Label label = new Label(fileHandle.nameWithoutExtension(), labelStyle);
+		label.addListener(new InputListener(){
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				ShipViewer.selectedShip = fileHandle;
 				buttonClick.play();
-				ShipViewer.selectedShip = fh;
+				for (Actor a : shipSelectGroup.getChildren()){
+					a.setColor(Color.GRAY);
+				}
+				label.setColor(Color.WHITE);
 			}
 		});
-		shipSelectGroup.addActor(l);
+		shipSelectGroup.addActor(label);
 		
 		shipSelectGroup.pack();
 		menuBody.addActor(shipSelectGroup);

@@ -1,1 +1,1 @@
-Small_Ship/Small_Ship.g3db VCS/VCS.g3db VCIs/VCIs.g3db IMDC/IMDC.g3db
+Small_Ship/Small_Ship.g3db VCS/VCS.g3db VCIs/VCIs.g3db IMDC/IMDC.g3db O.S.C._Hygiea-Class_Gunship_objFiles/O.S.C._Hygiea-Class_Gunship.g3db

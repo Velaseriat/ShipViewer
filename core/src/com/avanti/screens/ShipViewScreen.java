@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -28,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class ShipViewScreen extends ButtonScreenAdapter implements InputProcessor{
+	protected static boolean buttonPressed;
 	TiledMap tiledMap; //our map, on which things will exist
 	PerspectiveCamera camera; //the camera
 	TiledMapRenderer tiledMapRenderer; //the thing that renders our map
@@ -75,8 +75,10 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 		if (ShipViewer.selectedColor == null)
 			env.add(new DirectionalLight().set(Color.WHITE, -1f, -0.8f, -0.2f)); //adds a directional  light 
 		else{
-			env.add(new DirectionalLight().set(ShipViewer.selectedColor, 1f, -1f, -0.5f)); //adds a directional  light 
+			env.add(new DirectionalLight().set(ShipViewer.selectedColor, -0f, 100.50f, -10.50f)); //adds a directional  light 
 		}
+		
+		env.add(new DirectionalLight().set(Color.YELLOW.mul(.75f), 1f, -1f, -0.5f)); //adds a directional  light 
 		//instance.transform = (blockLocTarget); //adjusts the position
 
 		mBatch = new ModelBatch();
@@ -97,10 +99,17 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 			shipModel  = ShipViewer.assetManager.get("ship.obj", Model.class);
 		else{
 			shipModel = ShipViewer.assetManager.get(ShipViewer.selectedShip.path(), Model.class);
-			shipModel.materials.add(new Material(
-	                ColorAttribute.createSpecular(1,1,1,1), 
-	                FloatAttribute.createShininess(8f)));
+			for (Material m : shipModel.materials){
+				System.out.println("METERIAL" + m.id);
+			//	m.set(ColorAttribute.createReflection(Color.RED));
+			//	m.set(ColorAttribute.createDiffuse(Color.WHITE));
+			//	m.set(ColorAttribute.createAmbient(Color.PINK));
+			//	m.set(ColorAttribute.createSpecular(Color.GREEN));
+				
+			}
 		}
+		for (Material m : shipModel.materials)
+			System.out.println("METERIAL" + m.id);
 		instance = new ModelInstance(shipModel);
 		blockLocTarget = instance.transform.cpy();
 		if (ShipViewer.selectedShip == null || ShipViewer.selectedShip.nameWithoutExtension().equals("ship"))
@@ -217,6 +226,7 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.play();
+				ShipViewScreen.buttonPressed = true;
 				Vector3 lookat = camera.position; //whatever it was looking at earlier, save it
 				target.set(camera.position.cpy().add(0f, 0f, -55f)); //change height of the camera
 				camera.lookAt(lookat); //make it look at the same shit
@@ -234,6 +244,7 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				buttonClick.play();
+				ShipViewScreen.buttonPressed = true;
 				Vector3 lookat = camera.position; //whatever it was looking at earlier, save it
 				target.set(camera.position.cpy().add(0f, 0f, 55f)); //change height of the camera
 				camera.lookAt(lookat); //make it look at the same shit
@@ -243,8 +254,6 @@ public class ShipViewScreen extends ButtonScreenAdapter implements InputProcesso
 		l3.setY(0);
 
 		buttonStage.addActor(l3);
-		
-		
 		
 		inputMultiplexer.addProcessor(this);
 		inputMultiplexer.addProcessor(buttonStage);  
